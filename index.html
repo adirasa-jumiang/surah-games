@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Game Susun Surat Pendek (Upgrade)</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f9;
+    text-align: center;
+    padding: 18px;
+    transition: background-color 0.3s ease;
+  }
+  h1 {
+    margin: 6px 0 2px;
+    font-size: 30px;
+    color: #2E7D32;
+  }
+  h3 {
+    margin: 6px 0 18px;
+  }
+  
+  /* Form Input */
+  #user-form {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    max-width: 400px;
+    margin: 20px auto;
+  }
+  .form-group {
+    margin-bottom: 15px;
+    text-align: left;
+  }
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  /* Game Info */
+  #game-info {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+  }
+  .info-box {
+    background: #fff;
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    min-width: 80px;
+  }
+  
+  /* Game Elements */
+  #game-container {
+    display: none;
+  }
+  #choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin: 14px 0;
+  }
+  .choice-btn {
+    padding: 12px 18px;
+    border-radius: 10px;
+    border: 0;
+    cursor: pointer;
+    font-size: 20px;
+    min-width: 220px;
+    background-color: #fff;
+    transition: all 0.2s ease;
+    direction: rtl;
+    text-align: right;
+    unicode-bidi: isolate;
+    font-family: 'Amiri', serif;
+    border: 2px solid #ddd;
+  }
+  .choice-btn:hover {
+    border-color: #2196F3;
+    transform: translateY(-2px);
+  }
+  #slots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 16px;
+  }
+  .slot {
+    width: 320px;
+    min-height: 70px;
+    border: 2px dashed #bdbdbd;
+    border-radius: 12px;
+    background: #fff;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+  }
+  .slot-num {
+    font-size: 14px;
+    color: #444;
+    text-align: left;
+    direction: ltr;
+    margin-bottom: 6px;
+  }
+  .slot-text {
+    min-height: 40px;
+    font-size: 22px;
+    direction: rtl;
+    text-align: right;
+    unicode-bidi: isolate;
+    font-family: 'Amiri', serif;
+  }
+  
+  /* Controls */
+  #controls {
+    margin-top: 18px;
+  }
+  .btn {
+    padding: 10px 14px;
+    margin: 6px;
+    border-radius: 8px;
+    border: 0;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .btn-start {
+    background: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    font-size: 18px;
+  }
+  .btn-reset {
+    background: #f44336;
+    color: white;
+  }
+  .btn-next {
+    background: #2196F3;
+    color: white;
+    display: none;
+  }
+  .btn-wa {
+    background: #25D366;
+    color: white;
+    display: inline-block;
+    margin-top: 10px;
+  }
+  
+  /* Result */
+  #result {
+    margin-top: 18px;
+    font-size: 18px;
+    font-weight: bold;
+    min-height: 27px;
+  }
+  
+  /* Final Report */
+  #final-report {
+    display: none;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    max-width: 500px;
+    margin: 20px auto;
+    text-align: center;
+  }
+  .report-title {
+    color: #2E7D32;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  .report-detail {
+    margin: 10px 0;
+    font-size: 18px;
+    text-align: left;
+    padding: 8px;
+    background: #f9f9f9;
+    border-radius: 5px;
+  }
+  
+  /* Block reload */
+  #block-reload {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  #block-reload-content {
+    background: white;
+    color: #333;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 400px;
+  }
+  
+  @media(max-width:540px){
+    .choice-btn {
+      min-width: 140px;
+      font-size: 18px;
+    }
+    .slot {
+      width: 90%;
+    }
+  }
+</style>
+</head>
+<body>
+  <!-- Form Input Awal -->
+  <div id="user-form">
+    <h2>Data Pemain</h2>
+    <div class="form-group">
+      <label for="player-name">Nama:</label>
+      <input type="text" id="player-name" placeholder="Masukkan nama Anda">
+    </div>
+    <div class="form-group">
+      <label for="player-class">Kelas:</label>
+      <input type="text" id="player-class" placeholder="Masukkan kelas Anda">
+    </div>
+    <button class="btn btn-start" id="startBtn">Mulai Game</button>
+  </div>
+
+  <!-- Container Game (Awalnya Disembunyikan) -->
+  <div id="game-container">
+    <h1>Game Susun Surat Pendek</h1>
+    
+    <div id="game-info">
+      <div class="info-box">⏱️ Waktu: <span id="timer">00:00:00</span></div>
+      <div class="info-box">⭐ Skor: <span id="score">0</span></div>
+      <div class="info-box">❌ Jumlah Salah: <span id="errors">0</span></div>
+    </div>
+    
+    <h3 id="question">Susun surat: —</h3>
+
+    <div id="choices"></div>
+
+    <div id="slots"></div>
+
+    <div id="controls">
+      <button class="btn btn-reset" id="resetBtn">🔄 Reset Susunan</button>
+      <button class="btn btn-next" id="nextBtn">➡️ Surat Berikutnya</button>
+      <button class="btn" id="enableVoiceBtn">🔊 Aktifkan Suara</button>
+    </div>
+
+    <div id="result"></div>
+  </div>
+
+  <!-- Laporan Akhir -->
+  <div id="final-report">
+    <div class="report-title">Alhamdulillah 🎉</div>
+    <div class="report-detail">Nama: <span id="report-name"></span></div>
+    <div class="report-detail">Kelas: <span id="report-class"></span></div>
+    <div class="report-detail">Skor: <span id="report-score"></span></div>
+    <div class="report-detail">Jumlah Salah: <span id="report-errors"></span></div>
+    <div class="report-detail">Waktu: <span id="report-time"></span></div>
+    
+    <button class="btn btn-wa" id="waBtn">📤 Kirim via WhatsApp</button>
+    <p style="font-size: 14px; margin-top: 10px; color: #666;">
+      Terima kasih telah bermain. Game sudah selesai dan tidak dapat dimainkan kembali.
+    </p>
+  </div>
+
+  <!-- Blokir reload -->
+  <div id="block-reload">
+    <div id="block-reload-content">
+      <h2>Game Selesai</h2>
+      <p>Anda telah menyelesaikan game. Tidak boleh melakukan reload halaman.</p>
+      <p>Silakan kirim hasilnya via WhatsApp atau tutup halaman ini.</p>
+    </div>
+  </div>
+
+<script>
+/* Data surat - 10 surat pendek */
+const suratList = [
+  {
+    nama: "Al-Fatihah",
+    ayat: [
+      "بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ",
+      "الْحَمْدُ لِلّٰهِ رَبِّ الْعٰلَمِينَ",
+      "الرَّحْمٰنِ الرَّحِيْمِ",
+      "مٰلِكِ يَوْمِ الدِّيْنِ",
+      "اِيَّاكَ نَعْبُدُ وَاِيَّاكَ نَسْتَعِيْنُ",
+      "اِهْدِنَا الصِّرَاطَ الْمُسْتَقِيْمَ",
+      "صِرَاطَ الَّذِينَ اَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوْبِ عَلَيْهِمْ وَلَا الضَّآلِّيْنَ"
+    ]
+  },
+  {
+    nama: "Al-Ikhlas",
+    ayat: [
+      "قُلْ هُوَ اللّٰهُ اَحَدٌ",
+      "اَللّٰهُ الصَّمَدُ",
+      "لَمْ يَلِدْ وَلَمْ يُولَدْ",
+      "وَلَمْ يَكُنْ لَّهٗ كُفُوًا اَحَدٌ"
+    ]
+  },
+  {
+    nama: "An-Nas",
+    ayat: [
+      "قُلْ أَعُوذُ بِرَبِّ النَّاسِ",
+      "مَلِكِ النَّاسِ",
+      "إِلَهِ النَّاسِ",
+      "مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ",
+      "الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ",
+      "مِنَ الْجِنَّةِ وَالنَّاسِ"
+    ]
+  },
+  {
+    nama: "Al-Falaq",
+    ayat: [
+      "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ",
+      "مِنْ شَرِّ مَا خَلَقَ",
+      "وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ",
+      "وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ",
+      "وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ"
+    ]
+  },
+  {
+    nama: "Al-Lahab",
+    ayat: [
+      "تَبَّتْ يَدَا أَبِي لَهَبٍ وَتَبَّ",
+      "مَا أَغْنَى عَنْهُ مَالُهُ وَمَا كَسَبَ",
+      "سَيَصْلَى نَارًا ذَاتَ لَهَبٍ",
+      "وَامْرَأَتُهُ حَمَّالَةَ الْحَطَبِ",
+      "فِي جِيدِهَا حَبْلٌ مِنْ مَسَدٍ"
+    ]
+  },
+  {
+    nama: "An-Nashr",
+    ayat: [
+      "إِذَا جَاءَ نَصْرُ اللَّهِ وَالْفَتْحُ",
+      "وَرَأَيْتَ النَّاسَ يَدْخُلُونَ فِي دِينِ اللَّهِ أَفْوَاجًا",
+      "فَسَبِّحْ بِحَمْدِ رَبِّكَ وَاسْتَغْفِرْهُ ۚ إِنَّهُ كَانَ تَوَّابًا"
+    ]
+  },
+  {
+    nama: "Al-Kafirun",
+    ayat: [
+      "قُلْ يَا أَيُّهَا الْكَافِرُونَ",
+      "لَا أَعْبُدُ مَا تَعْبُدُونَ",
+      "وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ",
+      "وَلَا أَنَا عَابِدٌ مَا عَبَدْتُمْ",
+      "وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ",
+      "لَكُمْ دِينُكُمْ وَلِيَ دِينِ"
+    ]
+  },
+  {
+    nama: "Al-Kautsar",
+    ayat: [
+      "إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ",
+      "فَصَلِّ لِرَبِّكَ وَانْحَرْ",
+      "إِنَّ شَانِئَكَ هُوَ الْأَبْتَرُ"
+    ]
+  },
+  {
+    nama: "Al-Ma'un",
+    ayat: [
+      "أَرَأَيْتَ الَّذِي يُكَذِّبُ بِالدِّينِ",
+      "فَذَلِكَ الَّذِي يَدُعُّ الْيَتِيمَ",
+      "وَلَا يَحُضُّ عَلَى طَعَامِ الْمِسْكِينِ",
+      "فَوَيْلٌ لِلْمُصَلِّينَ",
+      "الَّذِينَ هُمْ عَنْ صَلَاتِهِمْ سَاهُونَ",
+      "الَّذِينَ هُمْ يُرَاءُونَ",
+      "وَيَمْنَعُونَ الْمَاعُونَ"
+    ]
+  },
+  {
+    nama: "Quraisy",
+    ayat: [
+      "لِإِيلَافِ قُرَيْشٍ",
+      "إِيلَافِهِمْ رِحْلَةَ الشِّتَاءِ وَالصَّيْفِ",
+      "فَلْيَعْبُدُوا رَبَّ هَذَا الْبَيْتِ",
+      "الَّذِي أَطْعَمَهُمْ مِنْ جُوعٍ وَآمَنَهُمْ مِنْ خَوْفٍ"
+    ]
+  }
+];
+
+// Variabel global
+let playerName = "";
+let playerClass = "";
+let remainingSurat = [];
+let currentSurat = null;
+let score = 0;
+let errors = 0;
+let startTime = 0;
+let timerInterval = null;
+let arabicVoice = null;
+let isVoiceEnabled = false;
+let gameCompleted = false;
+
+// Load voices
+function loadVoices() {
+  const voices = speechSynthesis.getVoices();
+  arabicVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('ar')) || null;
+}
+if ('speechSynthesis' in window) {
+  speechSynthesis.onvoiceschanged = loadVoices;
+}
+
+// Shuffle array
+function shuffleArray(array) {
+  return array.slice().sort(() => Math.random() - 0.5);
+}
+
+// Format waktu
+function formatTime(milliseconds) {
+  const totalSeconds = Math.floor(milliseconds / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+// Update timer
+function updateTimer() {
+  const elapsed = Date.now() - startTime;
+  document.getElementById('timer').textContent = formatTime(elapsed);
+}
+
+// Mulai game
+function startGame() {
+  playerName = document.getElementById('player-name').value.trim();
+  playerClass = document.getElementById('player-class').value.trim();
+  
+  if (!playerName || !playerClass) {
+    alert("Silakan isi nama dan kelas terlebih dahulu!");
+    return;
+  }
+  
+  // Sembunyikan form, tampilkan game
+  document.getElementById('user-form').style.display = 'none';
+  document.getElementById('game-container').style.display = 'block';
+  
+  // Inisialisasi game
+  score = 0;
+  errors = 0;
+  startTime = Date.now();
+  remainingSurat = shuffleArray([...suratList]);
+  
+  // Mulai timer
+  timerInterval = setInterval(updateTimer, 1000);
+  updateTimer();
+  
+  // Update tampilan
+  document.getElementById('score').textContent = score;
+  document.getElementById('errors').textContent = errors;
+  
+  // Load surat pertama
+  loadNextSurat();
+}
+
+// Load surat berikutnya
+function loadNextSurat() {
+  if (remainingSurat.length === 0) {
+    finishGame();
+    return;
+  }
+  
+  currentSurat = remainingSurat.pop();
+  document.getElementById('question').textContent = `Susun surat: ${currentSurat.nama}`;
+  
+  // Buat pilihan
+  const choicesDiv = document.getElementById('choices');
+  choicesDiv.innerHTML = '';
+  const shuffledAyat = shuffleArray([...currentSurat.ayat]);
+  
+  shuffledAyat.forEach(ayat => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'choice-btn';
+    btn.textContent = ayat;
+    btn.dir = 'rtl';
+    btn.lang = 'ar';
+    btn.onclick = () => chooseWord(btn);
+    choicesDiv.appendChild(btn);
+  });
+  
+  // Buat slot
+  const slotsDiv = document.getElementById('slots');
+  slotsDiv.innerHTML = '';
+  
+  currentSurat.ayat.forEach((_, index) => {
+    const slot = document.createElement('div');
+    slot.className = 'slot';
+    
+    const num = document.createElement('div');
+    num.className = 'slot-num';
+    num.textContent = `Ayat ${index + 1}`;
+    
+    const txt = document.createElement('div');
+    txt.className = 'slot-text';
+    txt.dir = 'rtl';
+    txt.lang = 'ar';
+    txt.textContent = '';
+    
+    slot.appendChild(num);
+    slot.appendChild(txt);
+    slotsDiv.appendChild(slot);
+  });
+  
+  // Reset tampilan
+  document.getElementById('result').textContent = '';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+// Pilih kata
+function chooseWord(btn) {
+  const slots = document.querySelectorAll('.slot');
+  for (let slot of slots) {
+    const txt = slot.querySelector('.slot-text');
+    if (!txt.textContent.trim()) {
+      txt.textContent = btn.textContent;
+      btn.disabled = true;
+      
+      // Auto check jika semua slot terisi
+      const allFilled = Array.from(slots).every(s => 
+        s.querySelector('.slot-text').textContent.trim() !== ''
+      );
+      
+      if (allFilled) {
+        checkAnswer();
+      }
+      
+      break;
+    }
+  }
+}
+
+// Reset susunan
+function resetSurat() {
+  // Kembalikan semua pilihan
+  const choicesDiv = document.getElementById('choices');
+  choicesDiv.innerHTML = '';
+  
+  const shuffledAyat = shuffleArray([...currentSurat.ayat]);
+  shuffledAyat.forEach(ayat => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'choice-btn';
+    btn.textContent = ayat;
+    btn.dir = 'rtl';
+    btn.lang = 'ar';
+    btn.onclick = () => chooseWord(btn);
+    choicesDiv.appendChild(btn);
+  });
+  
+  // Kosongkan semua slot
+  const slots = document.querySelectorAll('.slot');
+  slots.forEach(slot => {
+    const txt = slot.querySelector('.slot-text');
+    txt.textContent = '';
+  });
+  
+  document.getElementById('result').textContent = '';
+}
+
+// Periksa jawaban
+function checkAnswer() {
+  const slots = document.querySelectorAll('.slot');
+  const userAnswer = Array.from(slots).map(slot => 
+    slot.querySelector('.slot-text').textContent.trim()
+  );
+  
+  // Periksa apakah semua slot terisi
+  if (userAnswer.includes('')) {
+    document.getElementById('result').textContent = 'Isi semua ayat terlebih dahulu!';
+    document.getElementById('result').style.color = '#f44336';
+    return false;
+  }
+  
+  // Bandingkan dengan jawaban benar
+  const isCorrect = userAnswer.every((ayat, index) => 
+    ayat === currentSurat.ayat[index]
+  );
+  
+  if (isCorrect) {
+    score += 10;
+    document.getElementById('score').textContent = score;
+    document.getElementById('result').textContent = 'Benar! +10 poin';
+    document.getElementById('result').style.color = '#4CAF50';
+    
+    // Bacakan surat
+    if (isVoiceEnabled) {
+      speak(currentSurat.ayat.join(' '));
+    }
+    
+    // Tampilkan tombol next
+    document.getElementById('nextBtn').style.display = 'inline-block';
+    return true;
+  } else {
+    score = Math.max(0, score - 5);
+    errors += 1;
+    document.getElementById('score').textContent = score;
+    document.getElementById('errors').textContent = errors;
+    document.getElementById('result').textContent = 'Salah! -5 poin. Coba lagi.';
+    document.getElementById('result').style.color = '#f44336';
+    return false;
+  }
+}
+
+// Next surat
+function nextSurat() {
+  loadNextSurat();
+}
+
+// Enable voice
+function enableVoice() {
+  loadVoices();
+  const t = new SpeechSynthesisUtterance('تم تفعيل الصوت');
+  if (arabicVoice) t.voice = arabicVoice;
+  t.lang = 'ar-SA';
+  speechSynthesis.speak(t);
+  document.getElementById('enableVoiceBtn').textContent = '✅ Suara Aktif';
+  document.getElementById('enableVoiceBtn').disabled = true;
+  isVoiceEnabled = true;
+}
+
+// Speak text
+function speak(text) {
+  if (!('speechSynthesis' in window) || !isVoiceEnabled) return;
+  const u = new SpeechSynthesisUtterance(text);
+  if (arabicVoice) u.voice = arabicVoice;
+  u.lang = 'ar-SA';
+  u.rate = 0.9;
+  speechSynthesis.speak(u);
+}
+
+// Selesai game
+function finishGame() {
+  clearInterval(timerInterval);
+  const totalTime = Date.now() - startTime;
+  gameCompleted = true;
+  
+  // Sembunyikan game, tampilkan laporan akhir
+  document.getElementById('game-container').style.display = 'none';
+  document.getElementById('final-report').style.display = 'block';
+  
+  // Isi laporan
+  document.getElementById('report-name').textContent = playerName;
+  document.getElementById('report-class').textContent = playerClass;
+  document.getElementById('report-score').textContent = score;
+  document.getElementById('report-errors').textContent = errors;
+  document.getElementById('report-time').textContent = formatTime(totalTime);
+  
+  // Blokir reload halaman
+  blockPageReload();
+}
+
+// Blokir reload halaman
+function blockPageReload() {
+  // Tambahkan event listener untuk mencegah reload
+  window.addEventListener('beforeunload', function(e) {
+    if (gameCompleted) {
+      e.preventDefault();
+      e.returnValue = 'Game sudah selesai. Anda tidak boleh melakukan reload.';
+      return 'Game sudah selesai. Anda tidak boleh melakukan reload.';
+    }
+  });
+  
+  // Tampilkan pesan blokir jika user mencoba reload
+  window.addEventListener('keydown', function(e) {
+    if (gameCompleted && (e.ctrlKey || e.metaKey) && (e.key === 'r' || e.key === 'R')) {
+      e.preventDefault();
+      document.getElementById('block-reload').style.display = 'flex';
+    }
+  });
+}
+
+// Kirim hasil via WhatsApp
+function sendWhatsApp() {
+  const totalTime = document.getElementById('report-time').textContent;
+  const message = `*Hasil Game Susun Surat Pendek*
+  
+Nama: ${playerName}
+Kelas: ${playerClass}
+Skor: ${score}
+Jumlah Salah: ${errors}
+Waktu: ${totalTime}
+
+*Alhamdulillah, telah menyelesaikan game susun surat pendek.*`;
+
+  const encodedMessage = encodeURIComponent(message);
+  const whatsappURL = `https://wa.me/6285104048765?text=${encodedMessage}`;
+  
+  window.open(whatsappURL, '_blank');
+}
+
+// Event listeners
+document.getElementById('startBtn').addEventListener('click', startGame);
+document.getElementById('resetBtn').addEventListener('click', resetSurat);
+document.getElementById('nextBtn').addEventListener('click', nextSurat);
+document.getElementById('enableVoiceBtn').addEventListener('click', enableVoice);
+document.getElementById('waBtn').addEventListener('click', sendWhatsApp);
+
+// Cegah konteks menu (klik kanan)
+document.addEventListener('contextmenu', function(e) {
+  if (gameCompleted) {
+    e.preventDefault();
+    return false;
+  }
+});
+</script>
+</body>
+</html>
