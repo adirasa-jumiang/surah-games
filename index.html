@@ -656,6 +656,40 @@ function finishGame() {
   clearInterval(timerInterval);
   const totalTime = Date.now() - startTime;
   gameCompleted = true;
+
+// Ganti dengan URL Deployment Apps Script Anda
+//const API_URL = 'https://script.google.com/macros/s/.../exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbwByXqS_xJZg4vw8qiLIrhwcA3bRgvTKmUOk2bkNcAyyHiFkmXllnE0e9aPeLDlrRMtyw/exec';
+
+// Function untuk kirim data highscore
+async function sendHighscoreToSheet(playerName, score, level, time) {
+    const dataToSend = {
+        name: playerName,
+        kelas: playerClass,
+        score: score,
+        level: level,
+        time: time
+    };
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'text/plain; charset=utf-8',
+            },
+            body: JSON.stringify(dataToSend)
+        });
+        console.log('Highscore berhasil dikirim!');
+        // Optional: Tampilkan notifikasi ke user
+        alert('Skor berhasil disimpan! Terima kasih.');
+    } catch (error) {
+        console.error('Error mengirim data:', error);
+    }
+}
+
+// Panggil function ini saat game selesai
+// Contoh: sendHighscoreToSheet("Fahri", 100, "Easy", "60 detik");
   
   // Sembunyikan game, tampilkan laporan akhir
   document.getElementById('game-container').style.display = 'none';
