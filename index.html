@@ -11,11 +11,13 @@
     background: #f4f4f9;
     text-align: center;
     padding: 18px;
+/*
     transition: background-color 0.3s ease;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
     overflow-x: hidden;
+*/
   }
   /* tek nempel atas  */
   header {
@@ -24,6 +26,10 @@
       background: #0f172a;
       color: #fff;
       font-size: 18px;
+      position: fixed; /* Menjadikan header "menempel" di layar */
+      top: 0; /* Menempatkan header di paling atas */
+      left: 0; /* Menempatkan header di paling kiri */
+      width: 100%; /* Membuat header selebar layar */
   }
   h1 {
     margin: 6px 0 2px;
